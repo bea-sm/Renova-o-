@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1" />
+<title>Documento Confidencial</title>
+<meta name="description" content="Um documento confidencial para Victor." />
+<meta name="theme-color" content="#0a0a0c" />
+
+<!-- Fontes: Playfair Display (display), Poppins (corpo/UI) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ===================================================== -->
+<!-- BARRA DE PROGRESSO GLOBAL                              -->
+<!-- ===================================================== -->
+<div class="progress-track" aria-hidden="true">
+  <div id="progressBar" class="progress-bar"></div>
+</div>
+
+<!-- ===================================================== -->
+<!-- BOTÃO DE MÚSICA AMBIENTE                                -->
+<!-- ===================================================== -->
+<button id="musicToggle" class="music-toggle" aria-label="Ligar ou desligar música" type="button">
+  <svg id="musicIconOn" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8">
+    <path d="M9 18V5l12-2v13" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="6" cy="18" r="3"/>
+    <circle cx="18" cy="16" r="3"/>
+  </svg>
+  <svg id="musicIconOff" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" style="display:none">
+    <path d="M9 18V5l12-2v13" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="6" cy="18" r="3"/>
+    <circle cx="18" cy="16" r="3"/>
+    <line x1="2" y1="2" x2="22" y2="22" stroke-linecap="round"/>
+  </svg>
+</button>
+
+<!-- Áudio ambiente (opcional). Coloque seus arquivos em assets/audio/ -->
+<audio id="ambientAudio" loop preload="none">
+  <source src="assets/audio/ambient.mp3" type="audio/mpeg">
+</audio>
+<audio id="sfxConfirm" preload="none">
+  <source src="assets/audio/confirm.mp3" type="audio/mpeg">
+</audio>
+<audio id="sfxPaper" preload="none">
+  <source src="assets/audio/paper.mp3" type="audio/mpeg">
+</audio>
+
+<!-- Canvas de fundo para chuva de corações / brilhos / confetes -->
+<canvas id="fxCanvas" class="fx-canvas" aria-hidden="true"></canvas>
+
+<!-- ===================================================== -->
+<!-- TELA DE LOADING INICIAL                                 -->
+<!-- ===================================================== -->
+<section id="screen-loading" class="screen loading-screen is-active">
+  <div class="loader-mark">
+    <span class="loader-heart">♥</span>
+  </div>
+  <p class="loader-label">carregando documento seguro…</p>
+</section>
+
+<!-- ===================================================== -->
+<!-- APP CONTAINER                                           -->
+<!-- ===================================================== -->
+<main id="app" class="app" hidden>
+
+  <!-- TELA 1 — Abertura -->
+  <section id="screen-1" class="screen dark-screen" data-index="1">
+    <div class="glass-card intro-card">
+      <p class="eyebrow reveal-line" data-delay="0">documento restrito</p>
+      <h1 class="reveal-line" data-delay="1">Você recebeu um<br>documento confidencial.</h1>
+      <p class="body-text reveal-line" data-delay="2">Este documento foi criado exclusivamente para o destinatário deste link.</p>
+      <button class="btn btn-primary reveal-line" data-delay="3" data-next="screen-2">
+        Abrir documento
+      </button>
+    </div>
+  </section>
+
+  <!-- TELA 2 — Cabeçalho do documento -->
+  <section id="screen-2" class="screen paper-screen" data-index="2">
+    <div class="paper-sheet slide-in">
+      <div class="paper-header">
+        <span class="paper-tag">DOCUMENTO Nº 08102025-01</span>
+      </div>
+      <div class="paper-row">
+        <span class="paper-label">Destinatário</span>
+        <span class="paper-value">Victor</span>
+      </div>
+      <div class="paper-row">
+        <span class="paper-label">Status</span>
+        <span class="paper-value pill pill-pending">Pendente</span>
+      </div>
+      <div class="paper-row">
+        <span class="paper-label">Classificação</span>
+        <span class="paper-value pill pill-confidential">Confidencial</span>
+      </div>
+      <div class="paper-divider"></div>
+      <button class="btn btn-dark" data-next="screen-3">Prosseguir</button>
+    </div>
+  </section>
+
+  <!-- TELA 3 — Relatório com checklist -->
+  <section id="screen-3" class="screen paper-screen" data-index="3">
+    <div class="paper-sheet">
+      <h2 class="paper-title">Relatório de Avaliação</h2>
+      <ul id="checklist" class="checklist">
+        <li class="check-item"><span class="check-mark">✔</span><span>Compartilhou momentos inesquecíveis.</span></li>
+        <li class="check-item"><span class="check-mark">✔</span><span>Esteve presente.</span></li>
+        <li class="check-item"><span class="check-mark">✔</span><span>Fez sorrir.</span></li>
+        <li class="check-item"><span class="check-mark">✔</span><span>Demonstrou carinho.</span></li>
+        <li class="check-item"><span class="check-mark">✔</span><span>Transformou dias comuns em especiais.</span></li>
+      </ul>
+      <p id="approvedTag" class="approved-tag">APROVADO COM EXCELÊNCIA</p>
+      <button id="btnToScreen4" class="btn btn-dark" data-next="screen-4" disabled>Continuar</button>
+    </div>
+  </section>
+
+  <!-- TELA 4 — Revelação / Contrato -->
+  <section id="screen-4" class="screen paper-screen" data-index="4">
+    <div class="paper-sheet">
+      <p class="eyebrow eyebrow-pink">revelação</p>
+      <h2 class="contract-title">Contrato de Renovação</h2>
+      <p class="contract-subtitle">Renovação oficial por mais 10 meses da nossa relação.</p>
+
+      <ol id="clauseList" class="clause-list">
+        <li>As partes reconhecem que, desde 08 de outubro de 2025, vivem uma história construída com carinho e cumplicidade.</li>
+        <li>Fica estabelecido que risadas, abraços e memórias continuarão sendo compartilhados diariamente.</li>
+        <li>Ambas as partes se comprometem a renovar esta relação automaticamente, sempre que o prazo se encerrar.</li>
+        <li>Fica vedada qualquer forma de desistência, salvo em caso de excesso de amor.</li>
+      </ol>
+
+      <label class="checkbox-row" id="agreeRow">
+        <input type="checkbox" id="agreeCheckbox" />
+        <span class="checkbox-fake"></span>
+        <span>Li e aceito renovar esta história.</span>
+      </label>
+
+      <button id="btnToScreen5" class="btn btn-dark" data-next="screen-5" disabled>Continuar</button>
+    </div>
+  </section>
+
+  <!-- TELA 5 — Assinatura -->
+  <section id="screen-5" class="screen paper-screen" data-index="5">
+    <div class="paper-sheet">
+      <h2 class="paper-title">Assinatura Digital</h2>
+      <p class="body-text small-muted">Assine abaixo com o dedo ou o mouse para confirmar a renovação.</p>
+
+      <div class="signature-wrap">
+        <canvas id="signaturePad" class="signature-pad"></canvas>
+        <span class="signature-hint">assine aqui</span>
+      </div>
+
+      <div class="signature-actions">
+        <button id="btnClearSig" class="btn btn-ghost" type="button">Limpar</button>
+        <button id="btnSignConfirm" class="btn btn-dark" type="button" disabled>Assinar</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- TELA 6 — Envelope -->
+  <section id="screen-6" class="screen dark-screen" data-index="6">
+    <p class="envelope-instruction fade-in-slow">Toque no envelope para abrir</p>
+    <div id="envelope" class="envelope" role="button" tabindex="0" aria-label="Abrir envelope">
+      <div class="envelope-shadow"></div>
+      <div class="envelope-back"></div>
+      <div class="envelope-letter-peek"></div>
+      <div class="envelope-flap"></div>
+      <div class="envelope-front-left"></div>
+      <div class="envelope-front-right"></div>
+      <div class="envelope-seal">♥</div>
+    </div>
+  </section>
+
+  <!-- TELA 7 — Carta -->
+  <section id="screen-7" class="screen letter-screen" data-index="7">
+    <div class="letter-sheet" id="letterSheet">
+      <p class="letter-greeting">Meu amor,</p>
+      <p>Desde o dia 08 de outubro de 2025, minha vida mudou de um jeito que eu nunca imaginei.</p>
+      <p>Obrigada por cada conversa, cada risada, cada momento e por sempre fazer meus dias mais felizes.</p>
+      <p>Hoje quero renovar oficialmente a nossa história por mais 10 meses.</p>
+      <p>E, pensando bem... eu faria tudo de novo.</p>
+      <p>Afinal, foi a maior loucura que já cometi: encontrar um completo desconhecido em um lugar que eu nem conhecia. Mas eu repetiria essa loucura mil vezes, porque foi naquele dia que conheci o meu primeiro amor e, espero, o meu último.</p>
+      <p>Espero que essa seja apenas mais uma das muitas renovações que ainda vamos viver.</p>
+      <p class="letter-love">Eu te amo.</p>
+      <p class="letter-signoff">Com todo o meu amor,<br><span>Ana Beatriz</span></p>
+
+      <!-- Botão secreto: coração pequeno que parece decoração -->
+      <button id="secretHeart" class="secret-heart" aria-label="?" type="button">♥</button>
+
+      <button class="btn btn-dark letter-continue" data-next="screen-final">Continuar</button>
+    </div>
+  </section>
+
+  <!-- TELA SECRETA -->
+  <section id="screen-secret" class="screen dark-screen secret-screen" data-index="7.5">
+    <div class="glass-card intro-card">
+      <p class="eyebrow eyebrow-pink">mensagem escondida</p>
+      <h2 class="secret-title">Se você achou esse coração...</h2>
+      <p class="body-text">...é porque presta atenção nos detalhes. Assim como presta atenção em mim. Obrigada por isso, todos os dias.</p>
+      <button class="btn btn-primary" data-next="screen-7">Voltar</button>
+    </div>
+  </section>
+
+  <!-- TELA FINAL -->
+  <section id="screen-final" class="screen paper-screen" data-index="8">
+    <div class="paper-sheet final-sheet">
+      <div class="final-badge">✔</div>
+      <h2 class="paper-title">Documento Aprovado</h2>
+      <ul class="final-list">
+        <li><span class="check-mark">✔</span>Documento concluído.</li>
+        <li><span class="check-mark">✔</span>Renovação aceita.</li>
+        <li><span class="check-mark">✔</span>Vigência: +10 meses.</li>
+        <li><span class="check-mark">✔</span>Renovação automática: Ativada.</li>
+        <li><span class="check-mark">✔</span>Assinado digitalmente por Victor.</li>
+      </ul>
+      <div id="finalSignaturePreview" class="final-signature-preview"></div>
+      <button id="btnFinalize" class="btn btn-dark" type="button">Finalizar</button>
+    </div>
+  </section>
+
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>
